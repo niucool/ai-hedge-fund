@@ -1,27 +1,27 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Sequence, Dict
+from typing import Dict, Sequence
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from .controller import AgentController
-from .trader import TradeExecutor
-from .metrics import PerformanceMetricsCalculator
-from .portfolio import Portfolio
-from .types import PerformanceMetrics, PortfolioValuePoint
-from .valuation import calculate_portfolio_value, compute_exposures
-from .output import OutputBuilder
-from .benchmarks import BenchmarkCalculator
-
 from src.tools.api import (
     get_company_news,
-    get_price_data,
-    get_prices,
     get_financial_metrics,
     get_insider_trades,
+    get_price_data,
+    get_prices,
 )
+
+from .benchmarks import BenchmarkCalculator
+from .controller import AgentController
+from .metrics import PerformanceMetricsCalculator
+from .output import OutputBuilder
+from .portfolio import Portfolio
+from .trader import TradeExecutor
+from .types import PerformanceMetrics, PortfolioValuePoint
+from .valuation import calculate_portfolio_value, compute_exposures
 
 
 class BacktestEngine:
@@ -88,19 +88,16 @@ class BacktestEngine:
             get_financial_metrics(ticker, self._end_date, limit=10)
             get_insider_trades(ticker, self._end_date, start_date=self._start_date, limit=1000)
             get_company_news(ticker, self._end_date, start_date=self._start_date, limit=1000)
-        
+
         # Preload data for SPY for benchmark comparison
         get_prices("SPY", self._start_date, self._end_date)
-
 
     def run_backtest(self) -> PerformanceMetrics:
         self._prefetch_data()
 
         dates = pd.date_range(self._start_date, self._end_date, freq="B")
         if len(dates) > 0:
-            self._portfolio_values = [
-                {"Date": dates[0], "Portfolio Value": self._initial_capital}
-            ]
+            self._portfolio_values = [{"Date": dates[0], "Portfolio Value": self._initial_capital}]
         else:
             self._portfolio_values = []
 
@@ -162,7 +159,7 @@ class BacktestEngine:
                 "Long/Short Ratio": exposures["Long/Short Ratio"],
             }
             self._portfolio_values.append(point)
-            
+
             # Build daily rows (stateless usage)
             rows = self._results.build_day_rows(
                 date_str=current_date_str,
@@ -190,5 +187,3 @@ class BacktestEngine:
 
     def get_portfolio_values(self) -> Sequence[PortfolioValuePoint]:
         return list(self._portfolio_values)
-
-

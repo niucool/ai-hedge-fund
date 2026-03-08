@@ -7,18 +7,18 @@ from src.agents.bill_ackman import bill_ackman_agent
 from src.agents.cathie_wood import cathie_wood_agent
 from src.agents.charlie_munger import charlie_munger_agent
 from src.agents.fundamentals import fundamentals_analyst_agent
+from src.agents.growth_agent import growth_analyst_agent
 from src.agents.michael_burry import michael_burry_agent
-from src.agents.phil_fisher import phil_fisher_agent
+from src.agents.mohnish_pabrai import mohnish_pabrai_agent
+from src.agents.news_sentiment import news_sentiment_agent
 from src.agents.peter_lynch import peter_lynch_agent
+from src.agents.phil_fisher import phil_fisher_agent
+from src.agents.rakesh_jhunjhunwala import rakesh_jhunjhunwala_agent
 from src.agents.sentiment import sentiment_analyst_agent
 from src.agents.stanley_druckenmiller import stanley_druckenmiller_agent
 from src.agents.technicals import technical_analyst_agent
 from src.agents.valuation import valuation_analyst_agent
 from src.agents.warren_buffett import warren_buffett_agent
-from src.agents.rakesh_jhunjhunwala import rakesh_jhunjhunwala_agent
-from src.agents.mohnish_pabrai import mohnish_pabrai_agent
-from src.agents.news_sentiment import news_sentiment_agent
-from src.agents.growth_agent import growth_analyst_agent
 
 # Define analyst configuration - single source of truth
 ANALYST_CONFIG = {
@@ -179,13 +179,4 @@ def get_analyst_nodes():
 
 def get_agents_list():
     """Get the list of agents for API responses."""
-    return [
-        {
-            "key": key,
-            "display_name": config["display_name"],
-            "description": config["description"],
-            "investing_style": config["investing_style"],
-            "order": config["order"]
-        }
-        for key, config in sorted(ANALYST_CONFIG.items(), key=lambda x: x[1]["order"])
-    ]
+    return [{"key": key, "display_name": config["display_name"], "description": config["description"], "investing_style": config["investing_style"], "order": config["order"]} for key, config in sorted(ANALYST_CONFIG.items(), key=lambda x: x[1]["order"])]

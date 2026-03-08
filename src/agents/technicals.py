@@ -1,25 +1,24 @@
+import json
 import math
 
+import numpy as np
+import pandas as pd
 from langchain_core.messages import HumanMessage
 
 from src.graph.state import AgentState, show_agent_reasoning
-from src.utils.api_key import get_api_key_from_state
-import json
-import pandas as pd
-import numpy as np
-
 from src.tools.api import get_prices, prices_to_df
+from src.utils.api_key import get_api_key_from_state
 from src.utils.progress import progress
 
 
 def safe_float(value, default=0.0):
     """
     Safely convert a value to float, handling NaN cases
-    
+
     Args:
         value: The value to convert (can be pandas scalar, numpy value, etc.)
         default: Default value to return if the input is NaN or invalid
-    
+
     Returns:
         float: The converted value or default if NaN/invalid
     """
@@ -45,7 +44,7 @@ def technical_analyst_agent(state: AgentState, agent_id: str = "technical_analys
     start_date = data["start_date"]
     end_date = data["end_date"]
     tickers = data["tickers"]
-    api_key = get_api_key_from_state(state, "FINANCIAL_DATASETS_API_KEY")
+    api_key = get_api_key_from_state(state, "NEWSDATA_API_KEY")
     # Initialize analysis for each ticker
     technical_analysis = {}
 

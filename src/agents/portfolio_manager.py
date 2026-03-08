@@ -1,13 +1,14 @@
 import json
 import time
+
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
-
-from src.graph.state import AgentState, show_agent_reasoning
 from pydantic import BaseModel, Field
 from typing_extensions import Literal
-from src.utils.progress import progress
+
+from src.graph.state import AgentState, show_agent_reasoning
 from src.utils.llm import call_llm
+from src.utils.progress import progress
 
 
 class PortfolioDecision(BaseModel):
@@ -38,7 +39,7 @@ def portfolio_management_agent(state: AgentState, agent_id: str = "portfolio_man
 
         # Find the corresponding risk manager for this portfolio manager
         if agent_id.startswith("portfolio_manager_"):
-            suffix = agent_id.split('_')[-1]
+            suffix = agent_id.split("_")[-1]
             risk_manager_id = f"risk_management_agent_{suffix}"
         else:
             risk_manager_id = "risk_management_agent"  # Fallback for CLI
@@ -82,8 +83,7 @@ def portfolio_management_agent(state: AgentState, agent_id: str = "portfolio_man
     )
 
     if state["metadata"]["show_reasoning"]:
-        show_agent_reasoning({ticker: decision.model_dump() for ticker, decision in result.decisions.items()},
-                             "Portfolio Manager")
+        show_agent_reasoning({ticker: decision.model_dump() for ticker, decision in result.decisions.items()}, "Portfolio Manager")
 
     progress.update_status(agent_id, None, "Done")
 
@@ -94,10 +94,10 @@ def portfolio_management_agent(state: AgentState, agent_id: str = "portfolio_man
 
 
 def compute_allowed_actions(
-        tickers: list[str],
-        current_prices: dict[str, float],
-        max_shares: dict[str, int],
-        portfolio: dict[str, float],
+    tickers: list[str],
+    current_prices: dict[str, float],
+    max_shares: dict[str, int],
+    portfolio: dict[str, float],
 ) -> dict[str, dict[str, int]]:
     """Compute allowed actions and max quantities for each ticker deterministically."""
     allowed = {}
@@ -175,13 +175,13 @@ def _compact_signals(signals_by_ticker: dict[str, dict]) -> dict[str, dict]:
 
 
 def generate_trading_decision(
-        tickers: list[str],
-        signals_by_ticker: dict[str, dict],
-        current_prices: dict[str, float],
-        max_shares: dict[str, int],
-        portfolio: dict[str, float],
-        agent_id: str,
-        state: AgentState,
+    tickers: list[str],
+    signals_by_ticker: dict[str, dict],
+    current_prices: dict[str, float],
+    max_shares: dict[str, int],
+    portfolio: dict[str, float],
+    agent_id: str,
+    state: AgentState,
 ) -> PortfolioManagerOutput:
     """Get decisions from the LLM with deterministic constraints and a minimal prompt."""
 
@@ -195,9 +195,7 @@ def generate_trading_decision(
         aa = allowed_actions_full.get(t, {"hold": 0})
         # If only 'hold' key exists, there is no trade possible
         if set(aa.keys()) == {"hold"}:
-            prefilled_decisions[t] = PortfolioDecision(
-                action="hold", quantity=0, confidence=100.0, reasoning="No valid trade available"
-            )
+            prefilled_decisions[t] = PortfolioDecision(action="hold", quantity=0, confidence=100.0, reasoning="No valid trade available")
         else:
             tickers_for_llm.append(t)
 
@@ -211,24 +209,8 @@ def generate_trading_decision(
     # Minimal prompt template
     template = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are a portfolio manager.\n"
-                "Inputs per ticker: analyst signals and allowed actions with max qty (already validated).\n"
-                "Pick one allowed action per ticker and a quantity ≤ the max. "
-                "Keep reasoning very concise (max 100 chars). No cash or margin math. Return JSON only."
-            ),
-            (
-                "human",
-                "Signals:\n{signals}\n\n"
-                "Allowed:\n{allowed}\n\n"
-                "Format:\n"
-                "{{\n"
-                '  "decisions": {{\n'
-                '    "TICKER": {{"action":"...","quantity":int,"confidence":int,"reasoning":"..."}}\n'
-                "  }}\n"
-                "}}"
-            ),
+            ("system", "You are a portfolio manager.\n" "Inputs per ticker: analyst signals and allowed actions with max qty (already validated).\n" "Pick one allowed action per ticker and a quantity ≤ the max. " "Keep reasoning very concise (max 100 chars). No cash or margin math. Return JSON only."),
+            ("human", "Signals:\n{signals}\n\n" "Allowed:\n{allowed}\n\n" "Format:\n" "{{\n" '  "decisions": {{\n' '    "TICKER": {{"action":"...","quantity":int,"confidence":int,"reasoning":"..."}}\n' "  }}\n" "}}"),
         ]
     )
 
@@ -243,9 +225,7 @@ def generate_trading_decision(
         # start from prefilled
         decisions = dict(prefilled_decisions)
         for t in tickers_for_llm:
-            decisions[t] = PortfolioDecision(
-                action="hold", quantity=0, confidence=0.0, reasoning="Default decision: hold"
-            )
+            decisions[t] = PortfolioDecision(action="hold", quantity=0, confidence=0.0, reasoning="Default decision: hold")
         return PortfolioManagerOutput(decisions=decisions)
 
     llm_out = call_llm(

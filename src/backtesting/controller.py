@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Callable, Sequence, Dict, Any
+from typing import Any, Callable, Dict, Sequence
 
-from .types import AgentOutput, AgentDecisions, PortfolioSnapshot, ActionLiteral, Action
 from .portfolio import Portfolio
+from .types import Action, ActionLiteral, AgentDecisions, AgentOutput, PortfolioSnapshot
 
 
 class AgentController:
@@ -63,5 +63,3 @@ class AgentController:
             "analyst_signals": analyst_signals_in,
         }
         return normalized_output
-
-

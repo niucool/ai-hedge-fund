@@ -20,8 +20,8 @@ class PerformanceMetricsCalculator:
         metrics.update(computed)  # type: ignore[arg-type]
 
     def compute_metrics(self, values: Sequence[PortfolioValuePoint]) -> PerformanceMetrics:
-        import pandas as pd
         import numpy as np
+        import pandas as pd
 
         if not values:
             return {"sharpe_ratio": None, "sortino_ratio": None, "max_drawdown": None}
@@ -75,5 +75,3 @@ class PerformanceMetricsCalculator:
             "max_drawdown": max_drawdown,
             "max_drawdown_date": max_drawdown_date,
         }
-
-

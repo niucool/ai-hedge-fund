@@ -5,6 +5,12 @@ backtesting subsystem. Implementations can live elsewhere and be
 introduced gradually without changing existing behavior.
 """
 
+from .controller import AgentController
+from .engine import BacktestEngine
+from .metrics import PerformanceMetricsCalculator
+from .output import OutputBuilder
+from .portfolio import Portfolio
+from .trader import TradeExecutor
 from .types import (
     ActionLiteral,
     AgentDecision,
@@ -18,14 +24,7 @@ from .types import (
     PriceDataFrame,
     TickerRealizedGains,
 )
-
-from .portfolio import Portfolio
-from .trader import TradeExecutor
-from .metrics import PerformanceMetricsCalculator
-from .controller import AgentController
-from .engine import BacktestEngine
 from .valuation import calculate_portfolio_value, compute_exposures
-from .output import OutputBuilder
 
 __all__ = [
     # Types
@@ -50,5 +49,3 @@ __all__ = [
     "compute_exposures",
     "OutputBuilder",
 ]
-
-
