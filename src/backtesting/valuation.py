@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Dict, Mapping, Mapping as _MappingAny
+from typing import Dict
+from typing import Mapping
+from typing import Mapping as _MappingAny
 
 from .portfolio import Portfolio
 
@@ -50,7 +52,6 @@ def compute_exposures(portfolio: Portfolio, current_prices: Mapping[str, float])
     }
 
 
-
 def compute_portfolio_summary(
     *,
     portfolio: Portfolio,
@@ -79,4 +80,3 @@ def compute_portfolio_summary(
         "sortino_ratio": performance_metrics.get("sortino_ratio"),
         "max_drawdown": performance_metrics.get("max_drawdown"),
     }
-

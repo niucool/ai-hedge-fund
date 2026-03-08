@@ -9,15 +9,17 @@ def _build_values(values: list[float]):
     start = datetime(2024, 1, 1)
     points = []
     for i, v in enumerate(values):
-        points.append({
-            "Date": start + timedelta(days=i),
-            "Portfolio Value": v,
-            "Long Exposure": 0.0,
-            "Short Exposure": 0.0,
-            "Gross Exposure": 0.0,
-            "Net Exposure": 0.0,
-            "Long/Short Ratio": np.inf,
-        })
+        points.append(
+            {
+                "Date": start + timedelta(days=i),
+                "Portfolio Value": v,
+                "Long Exposure": 0.0,
+                "Short Exposure": 0.0,
+                "Gross Exposure": 0.0,
+                "Net Exposure": 0.0,
+                "Long/Short Ratio": np.inf,
+            }
+        )
     return points
 
 
@@ -49,4 +51,3 @@ def test_metrics_zero_volatility_sharpe_zero():
     metrics = {"sharpe_ratio": None, "sortino_ratio": None, "max_drawdown": None}
     calc.update_metrics(metrics, vals)
     assert metrics["sharpe_ratio"] == 0.0
-

@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
+from typing import Callable, Dict, List, Optional
+
 from rich.console import Console
 from rich.live import Live
-from rich.table import Table
 from rich.style import Style
+from rich.table import Table
 from rich.text import Text
-from typing import Dict, Optional, Callable, List
 
 console = Console()
 
@@ -52,7 +53,7 @@ class AgentProgress:
             self.agent_status[agent_name]["status"] = status
         if analysis:
             self.agent_status[agent_name]["analysis"] = analysis
-        
+
         # Set the timestamp as UTC datetime
         timestamp = datetime.now(timezone.utc).isoformat()
         self.agent_status[agent_name]["timestamp"] = timestamp
